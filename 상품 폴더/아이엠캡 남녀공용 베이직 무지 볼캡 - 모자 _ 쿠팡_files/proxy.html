@@ -1,0 +1,83 @@
+
+<!-- saved from url=(0047)https://www.coupang.com/n-api/web-adapter/proxy -->
+<html><input type="hidden" id="__yoroi_connector_api_injected_type" value="prod"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>
+    <script>
+    (function() {
+
+
+//#region src/utils/localStorage.ts
+function getLocalStorageItem(key) {
+	const l = window.localStorage;
+	if (l) try {
+		return l.getItem(key) || "";
+	} catch (e) {
+		console.warn(`Error retrieving item from localStorage: ${e}`);
+		return "";
+	}
+	return "";
+}
+function setLocalStorageItem(key, value) {
+	const l = window.localStorage;
+	if (l) try {
+		return l.setItem(key, value);
+	} catch (e) {
+		console.warn(`Error set item from localStorage: ${e}`);
+	}
+}
+
+//#endregion
+//#region src/modules/web-adapter/proxy/constants.ts
+const setLocalStorageAction = "setLocalStorage";
+const getLocalStorageAction = "getLocalStorage";
+const isReadyAction = "isReady";
+const eventType = "web-adapter-proxy";
+
+//#endregion
+//#region src/config/app.ts
+const coupangDomain = ".coupang.com";
+function isCoupangDomain(origin) {
+	origin = origin.replace(/:\d+$/, "");
+	const index = origin.length - coupangDomain.length;
+	return origin.indexOf(coupangDomain, index) === index;
+}
+
+//#endregion
+//#region src/modules/web-adapter/proxy/proxy.ts
+const targetOrigin = "*";
+function send(msg, target) {
+	target?.postMessage(msg, targetOrigin);
+}
+window.addEventListener("message", (event) => {
+	if (isCoupangDomain(event.origin) && event.data && event.data.type === eventType) {
+		const { id, data } = event.data;
+		const { action } = data;
+		if (action === isReadyAction) send({
+			type: eventType,
+			id,
+			data: 1
+		}, event.source);
+		else if (action === getLocalStorageAction) send({
+			type: eventType,
+			id,
+			data: getLocalStorageItem(data.name) || ""
+		}, event.source);
+		else if (action == setLocalStorageAction) {
+			setLocalStorageItem(data.name, data.value);
+			send({
+				type: eventType,
+				id
+			}, event.source);
+		}
+	}
+});
+parent.postMessage({
+	type: eventType,
+	data: { action: isReadyAction }
+}, targetOrigin);
+
+//#endregion
+})();
+    </script>
+    
+    
+    </body></html>

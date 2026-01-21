@@ -1,0 +1,7 @@
+playwright
+pandas
+requests
+playwright-stealth
+google-generativeai
+openpyxl
+xlwings

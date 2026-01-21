@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta property="og:title" content="Daiso Mock Product">
+    <meta property="og:url" content="https://www.daisomall.co.kr/product/12345">
+    <meta property="og:image" content="https://image1.jpg">
+</head>
+<body>
+    <h1>Daiso Mock Product Title</h1>
+    <div class="price">5,000원</div>
+    
+    <!-- Case 1: Relative Path -->
+    <img src="/data/relative_image.jpg" alt="Rel Image">
+    
+    <!-- Case 2: Lazy Load -->
+    <img src="blank.gif" data-original="https://cdn.daiso.com/lazy_image.jpg">
+    <img src="blank.gif" data-src="https://cdn.daiso.com/lazy_image2.jpg">
+
+    <!-- Case 3: Brute Force Text -->
+    <script>
+        var someData = {
+            "img": "https://cdn.daiso.com/hidden_script_image.png"
+        };
+    </script>
+    
+    <!-- Case 4: Iframe (Requires specific setup, Playwright might not load local iframe content effectively unless inline) -->
+    <!-- We skip iframe test for simple file unless we create second file -->
+</body>
+</html>
