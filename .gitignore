@@ -147,3 +147,4 @@ cython_debug/
 # Custom
 output/
 test_browsers/
+config_api.txt
